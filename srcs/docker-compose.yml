@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx-image
+    container_name: nginx
+    build: ./nginx/.
+    ports: 
+    - "433:433"
+    restart: always 
