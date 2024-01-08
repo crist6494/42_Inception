@@ -1,21 +1,32 @@
 FROM debian:buster
 
-RUN apt update -y && apt upgrade -y
+RUN apt-get update && apt-get upgrade -y
 
-RUN apt install php7.3 php-fpm php-mysql mariadb-client wget -y
+RUN apt-get -y install wget
 
-RUN wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -P /var/www \
-	&& wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN apt-get install -y php7.3\
+	php7.3-fpm \
+ 	php7.3-mysql \
+	php7.3-phar\
+	mariadb-client 
 
-RUN cd /var/www/ && tar -xzf wordpress-6.0-fr_FR.tar.gz && rm wordpress-6.0-fr_FR.tar.gz \
-	&& chown -R root:root /var/www/wordpress
 
-RUN chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
+RUN wget https://wordpress.org/wordpress-6.0.tar.gz -P /var/www
+RUN cd /var/www && tar -xzf wordpress-6.0.tar.gz && rm wordpress-6.0.tar.gz
 
-# Exponer el puerto 80 para acceder a WordPress desde fuera del contenedor
-EXPOSE 80
 
-# Iniciar el servidor web para PHP (puedes usar php-fpm)
-CMD ["tail", "-f", "/dev/null"]
+COPY	./conf/www.conf			/etc/php/7.3/fpm/pool.d/www.conf
 
- 
+RUN	chown -R root:root /var/www/wordpress
+
+
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+
+RUN chmod +x wp-cli.phar
+RUN mv wp-cli.phar /usr/local/bin/wp-cli.phar
+
+COPY conf/auto_config.sh auto_config.sh
+
+EXPOSE 9000
+
+ENTRYPOINT ["bash", "auto_config.sh"]

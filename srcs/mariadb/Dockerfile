@@ -6,12 +6,10 @@ RUN apt install mariadb-server -y
 
 COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
-COPY ./tools/script.sh /conf/
+COPY tools/script.sh /script.sh
 
-WORKDIR /conf/
-
-RUN chmod +x script.sh
+RUN chmod +x /script.sh
 
 EXPOSE 3306
 
-CMD ["/conf/script.sh"]
+ENTRYPOINT ["bash", "script.sh"]

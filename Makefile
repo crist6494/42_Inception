@@ -23,7 +23,7 @@ s:
 	docker ps
 
 sa:
-	dcoker ps -a
+	docker ps -a
 
 
 

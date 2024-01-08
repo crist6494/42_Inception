@@ -1,10 +1,43 @@
 version: '3'
 
 services:
+
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    hostname: mariadb
+    build: ./mariadb/.
+    env_file: .env
+    networks:
+      - inception
+    restart: on-failure
+
+
   nginx:
-    image: nginx-image
+    image: nginx
     container_name: nginx
+    hostname: nginx
     build: ./nginx/.
+    depends_on:
+      - wordpress
     ports: 
-    - "433:433"
-    restart: always 
+      - "443:443"
+    networks:
+      - inception
+    restart: on-failure
+
+
+  wordpress:
+    image: wordpress
+    container_name: wordpress
+    hostname: wordpress
+    build: ./wordpress/.
+    env_file: .env
+    networks:
+      - inception
+    restart: on-failure
+
+
+networks:
+  inception:
+    driver: bridge
