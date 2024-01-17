@@ -9,12 +9,17 @@ all: 	vol
 vol:
 	mkdir -p $(VOL_M)
 	mkdir -p $(VOL_W)
-	#sudo chown -R $(USER):$(USER) $(VOL_M)
-	#sudo chown -R $(USER):$(USER) $(VOL_W)
+	@sudo chown -R $(USER):$(USER) $(VOL_M)
+	@sudo chown -R $(USER):$(USER) $(VOL_W)
 
-rmvol:
-	sudo docker volume rm mariadb_vol wordpress_vol	
+
+rmdirv:
 	sudo rm -rf $(VOL_M) $(VOL_W)
+
+rmvol:	rmdirv
+	sudo docker volume rm mariadb_vol wordpress_vol	
+
+
 
 
 start:
@@ -35,9 +40,10 @@ fclean: clean rmvol
 
 
 restart:
-	systemctl restart docker
+	sudo systemctl restart docker
 
-reset:
+
+reset:  rmdirv
 	sudo docker stop $$(docker ps -qa); \
 	sudo docker rm $$(docker ps -qa); \
 	sudo docker rmi -f $$(docker images -qa); \
@@ -45,18 +51,24 @@ reset:
 	sudo docker network rm $$(docker network ls -q) 2>/dev/null
 
 
+
 logs:
 	sudo docker compose -f ./srcs/docker-compose.yml logs
 
-i:
-	docker images
-
-s:
-	docker ps
 
 sa:
 	docker ps -a
 
 
+ls:
+	@sudo docker images 
+	@echo "\n"
+	@sudo docker ps
+	@echo "\n"
+	@sudo docker network ls
+	@echo "\n"
+	@sudo docker volume ls
 
-.PHONY: start clean stop i s sa
+
+
+.PHONY: all vol rmvol rmdirv start stop clean fclean restart reset logs sa ls

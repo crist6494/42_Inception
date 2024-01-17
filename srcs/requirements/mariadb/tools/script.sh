@@ -1,6 +1,5 @@
 #!/bin/sh
 
-#mysqld_safe & 
 service mysql start;
 
 sleep 10
