@@ -1,9 +1,21 @@
 [mysql]
+# => Manage character for conexions
 default-character-set=utf8
 
+# => Indicate taht is a mysql configuration
 [mysqld]
+
+# => Port tha mysql listen
 port = 3306
+
+# => Listen all the red interfaces aviable
 bind_address=*
-datadir = /var/lib/mysql
+
+# => Directory where store all the dates
+datadir = /var/lib/
+
+# => Define the user system
 user = mysql
+
+# => Locate the socker that set out the client-server conexion
 socket = /run/mysqld/mysqld.sock
